@@ -1,0 +1,36 @@
+# ==============================
+# Core Backend Framework
+# ==============================
+fastapi
+uvicorn[standard]
+
+# ==============================
+# Database & ORM
+# ==============================
+sqlalchemy
+psycopg2-binary
+
+# ==============================
+# Migrations
+# ==============================
+alembic
+
+# ==============================
+# Data Validation
+# ==============================
+pydantic
+
+# ==============================
+# Environment Variables
+# ==============================
+python-dotenv
+
+# ==============================
+# HTTP Requests (NVD API, scanner → backend)
+# ==============================
+requests
+
+# ==============================
+# Background / Utility
+# ==============================
+python-dateutil

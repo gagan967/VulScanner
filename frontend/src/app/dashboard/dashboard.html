@@ -1,0 +1,231 @@
+<!-- Main Wrapper with Background Image -->
+<div class="flex h-screen bg-slate-900 font-sans text-slate-100 overflow-hidden relative">
+  <!-- Background Overlay -->
+  <div class="absolute inset-0 z-0 opacity-20 pointer-events-none"
+    style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop'); background-size: cover; background-position: center;">
+  </div>
+
+  <!-- Sidebar (Hidden on Mobile) -->
+  <aside
+    class="w-64 bg-slate-900/90 backdrop-blur-md border-r border-slate-700 hidden md:flex flex-col shadow-2xl z-20">
+    <div class="h-20 flex items-center px-8 border-b border-slate-700">
+      <div class="text-2xl font-bold tracking-wider flex items-center gap-3 text-cyan-400">
+        <span class="text-3xl">🛡️</span> SECURE<span class="text-white">SCAN</span>
+      </div>
+    </div>
+
+    <nav class="flex-1 px-4 py-8 space-y-4">
+      <a href="#"
+        class="flex items-center px-4 py-4 bg-cyan-600/20 text-cyan-400 border border-cyan-500/30 rounded-xl shadow-[0_0_15px_rgba(34,211,238,0.2)] transition-all hover:scale-105">
+        <span class="mr-4 text-xl">📊</span> Dashboard
+      </a>
+      <a href="#"
+        class="flex items-center px-4 py-4 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl transition-colors">
+        <span class="mr-4 text-xl">🕸️</span> Scans
+      </a>
+      <a href="#"
+        class="flex items-center px-4 py-4 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl transition-colors">
+        <span class="mr-4 text-xl">⚙️</span> Settings
+      </a>
+    </nav>
+
+    <div class="p-6 border-t border-slate-700 bg-slate-900/50">
+      <div class="text-xs text-slate-500 uppercase font-bold tracking-widest mb-3">System Status</div>
+      <div class="flex items-center gap-3 text-sm text-emerald-400 font-mono">
+        <span class="relative flex h-3 w-3">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+        </span>
+        {{ status.mode || 'ONLINE' }}
+      </div>
+    </div>
+  </aside>
+
+  <!-- Mobile Header (Visible only on Mobile) -->
+  <div
+    class="md:hidden absolute top-0 left-0 right-0 h-16 bg-slate-900/95 border-b border-slate-700 flex items-center px-6 z-30 justify-between">
+    <div class="text-xl font-bold text-cyan-400 flex items-center gap-2">
+      <span>🛡️</span> SECURESCAN
+    </div>
+    <button class="text-slate-300">☰</button>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="flex-1 flex flex-col relative z-10 md:pt-0 pt-16">
+
+    <!-- Top Bar -->
+    <header
+      class="h-20 bg-slate-900/50 backdrop-blur-sm border-b border-white/5 flex justify-between items-center px-8">
+      <div>
+        <h2 class="text-2xl font-bold text-white tracking-tight">Command Center</h2>
+        <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest">Real-time Threat Monitoring</p>
+      </div>
+
+      <div class="flex items-center gap-6">
+        <button (click)="refreshData()"
+          class="group flex items-center gap-2 px-4 py-2 bg-slate-800/80 hover:bg-cyan-500/20 border border-slate-600 hover:border-cyan-400/50 rounded-lg transition-all text-sm font-medium text-slate-300 hover:text-cyan-300">
+          <span class="group-hover:animate-spin">↻</span> REFRESH
+        </button>
+        <div
+          class="h-10 w-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg border border-white/10">
+          A
+        </div>
+      </div>
+    </header>
+
+    <!-- Scrollable content -->
+    <main
+      class="flex-1 overflow-y-auto p-4 md:p-8 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        <!-- Critical -->
+        <div (click)="filterBy('CRITICAL')"
+          class="cursor-pointer bg-slate-800/60 backdrop-blur-md p-6 rounded-2xl border transition-all relative overflow-hidden group hover:-translate-y-1"
+          [ngClass]="currentFilter === 'CRITICAL' ? 'border-red-500 shadow-[0_0_30px_rgba(239,68,68,0.3)] bg-slate-800' : 'border-red-500/30 shadow-[0_0_20px_rgba(239,68,68,0.1)]'">
+
+          <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+            <span class="text-6xl">⚡</span>
+          </div>
+          <p class="text-xs font-bold text-red-400 uppercase tracking-widest mb-2">Critical Threats</p>
+          <h3 class="text-4xl font-black text-white">{{ severityCounts.critical }}</h3>
+          <div class="mt-4 h-1 w-full bg-slate-700 rounded-full overflow-hidden">
+            <div class="h-full bg-red-500 w-full animate-pulse"></div>
+          </div>
+        </div>
+
+        <!-- High -->
+        <div (click)="filterBy('HIGH')"
+          class="cursor-pointer bg-slate-800/60 backdrop-blur-md p-6 rounded-2xl border transition-all relative overflow-hidden group hover:-translate-y-1"
+          [ngClass]="currentFilter === 'HIGH' ? 'border-orange-500 shadow-[0_0_30px_rgba(249,115,22,0.3)] bg-slate-800' : 'border-orange-500/30 shadow-[0_0_20px_rgba(249,115,22,0.1)]'">
+
+          <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+            <span class="text-6xl">🔥</span>
+          </div>
+          <p class="text-xs font-bold text-orange-400 uppercase tracking-widest mb-2">High Severity</p>
+          <h3 class="text-4xl font-black text-white">{{ severityCounts.high }}</h3>
+          <div class="mt-4 h-1 w-full bg-slate-700 rounded-full overflow-hidden">
+            <div class="h-full bg-orange-500 w-3/4"></div>
+          </div>
+        </div>
+
+        <!-- Medium -->
+        <div (click)="filterBy('MEDIUM')"
+          class="cursor-pointer bg-slate-800/60 backdrop-blur-md p-6 rounded-2xl border transition-all relative overflow-hidden group hover:-translate-y-1"
+          [ngClass]="currentFilter === 'MEDIUM' ? 'border-yellow-500 shadow-[0_0_30px_rgba(234,179,8,0.3)] bg-slate-800' : 'border-yellow-500/30 shadow-[0_0_20px_rgba(234,179,8,0.1)]'">
+
+          <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+            <span class="text-6xl">⚠️</span>
+          </div>
+          <p class="text-xs font-bold text-yellow-400 uppercase tracking-widest mb-2">Medium Risks</p>
+          <h3 class="text-4xl font-black text-white">{{ severityCounts.medium }}</h3>
+          <div class="mt-4 h-1 w-full bg-slate-700 rounded-full overflow-hidden">
+            <div class="h-full bg-yellow-500 w-1/2"></div>
+          </div>
+        </div>
+
+        <!-- Total (Reset Filter) -->
+        <div (click)="filterBy('ALL')"
+          class="cursor-pointer bg-slate-800/60 backdrop-blur-md p-6 rounded-2xl border transition-all relative overflow-hidden group hover:-translate-y-1"
+          [ngClass]="currentFilter === 'ALL' ? 'border-cyan-500 shadow-[0_0_30px_rgba(6,182,212,0.3)] bg-slate-800' : 'border-cyan-500/30 shadow-[0_0_20px_rgba(6,182,212,0.1)]'">
+
+          <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+            <span class="text-6xl">🛡️</span>
+          </div>
+          <p class="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-2">Total Monitored</p>
+          <h3 class="text-4xl font-black text-white">{{ allVulnerabilities.length }}</h3>
+          <div class="mt-4 h-1 w-full bg-slate-700 rounded-full overflow-hidden">
+            <div class="h-full bg-cyan-500 w-full"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vulnerability Table -->
+      <div class="bg-slate-800/80 backdrop-blur-xl rounded-2xl border border-slate-700 shadow-2xl overflow-hidden">
+        <div class="px-8 py-6 border-b border-slate-700 flex justify-between items-center bg-slate-800/50">
+          <div>
+            <h3 class="text-xl font-bold text-white">Vulnerability Feed</h3>
+            <p class="text-sm text-slate-400 mt-1">Live updates from scanner</p>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-900/50 text-slate-400 text-xs font-bold uppercase tracking-wider">
+                <th class="px-8 py-5">Identified Software</th>
+                <th class="px-8 py-5">CVE Designation</th>
+                <th class="px-8 py-5">Threat Level</th>
+                <th class="px-8 py-5 text-right w-48">Countermeasure</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-700/50">
+              <tr *ngFor="let v of vulnerabilities" class="group hover:bg-cyan-900/10 transition-colors">
+                <td class="px-8 py-5">
+                  <div class="flex items-center">
+                    <div
+                      class="h-12 w-12 flex-shrink-0 bg-slate-700 rounded-xl flex items-center justify-center text-2xl shadow-lg border border-slate-600 group-hover:border-cyan-500/50 group-hover:text-cyan-400 transition-all">
+                      📦
+                    </div>
+                    <div class="ml-4">
+                      <div class="font-bold text-slate-100 text-lg">{{ v.software_name }}</div>
+                      <div class="text-xs text-slate-400 font-mono mt-1 px-2 py-0.5 bg-slate-900 rounded inline-block">
+                        v{{ v.affected_version }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-8 py-5">
+                  <div class="flex flex-col">
+                    <span class="text-sm font-mono text-cyan-300 font-medium">{{ v.cve_id }}</span>
+                    <span class="text-[10px] text-slate-500 mt-1 uppercase tracking-wide">Detected: {{ v.published_date
+                      }}</span>
+                  </div>
+                </td>
+                <td class="px-8 py-5">
+                  <span
+                    class="px-4 py-1.5 rounded-full text-xs font-bold border shadow-lg inline-flex items-center gap-1.5 tracking-wide uppercase"
+                    [ngClass]="{
+                          'bg-red-500/20 text-red-300 border-red-500/30': v.severity === 'CRITICAL',
+                          'bg-orange-500/20 text-orange-300 border-orange-500/30': v.severity === 'HIGH',
+                          'bg-yellow-500/20 text-yellow-300 border-yellow-500/30': v.severity === 'MEDIUM',
+                          'bg-slate-700 text-slate-300 border-slate-600': v.severity === 'LOW' || !v.severity
+                        }">
+                    <span class="w-1.5 h-1.5 rounded-full" [ngClass]="{
+                            'bg-red-500 animate-pulse': v.severity === 'CRITICAL',
+                            'bg-orange-500': v.severity === 'HIGH',
+                            'bg-yellow-500': v.severity === 'MEDIUM',
+                            'bg-slate-400': v.severity === 'LOW' || !v.severity
+                          }"></span>
+                    {{ v.severity }}
+                  </span>
+                </td>
+                <td class="px-8 py-5 text-right">
+                  <button (click)="openPatch(v)"
+                    class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-lg text-xs font-bold tracking-widest uppercase transition-all shadow-[0_0_15px_rgba(37,99,235,0.3)] hover:shadow-[0_0_20px_rgba(37,99,235,0.5)] active:scale-95 flex items-center justify-center gap-2 ml-auto w-full">
+                    <span>{{ (v.patch_command && v.patch_command.startsWith('Mock Fix:')) ? 'DEPLOY FIX' : 'LOCATE
+                      PATCH' }}</span>
+                  </button>
+                </td>
+              </tr>
+              <!-- Empty State -->
+              <tr *ngIf="vulnerabilities.length === 0 && !isLoading">
+                <td colspan="4" class="px-6 py-32 text-center text-slate-500">
+                  <div class="inline-block p-8 bg-slate-800/50 rounded-full mb-6 border border-slate-700">
+                    <span class="text-6xl opacity-50">🛡️</span>
+                  </div>
+                  <h3 class="text-2xl font-bold text-slate-300">System Secure</h3>
+                  <p class="text-slate-500 mt-2 max-w-sm mx-auto">No known vulnerabilities detected. Continuous
+                    monitoring is active.</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="mt-12 text-center text-xs text-slate-600 font-mono">
+        SECURE_SCAN_VER_1.0 // SYSTEM_ID: {{ status.id || 'LOCAL' }} // ENCRYPTED_CONNECTION
+      </div>
+    </main>
+  </div>
+</div>
